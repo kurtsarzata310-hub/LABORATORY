@@ -1,75 +1,288 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-    
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurt Harvy Sarzata - Student Resume</title>
-    <link rel="stylesheet" href="Style.css">
-
+    <title>Attendance Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-
 <body>
-    <div>
-    <h1> My Resume</h1>
-    <div class="center">
-    <img src="c:\Users\ACER\Pictures\6dd980e1-0a96-4508-8926-0ee43d23a8c6.jpg" alt="c:\Users\ACER\Pictures\6dd980e1-0a96-4508-8926-0ee43d23a8c6.jpg">
+<div class="container">
 
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="app-title">
+                <i class="fas fa-clipboard-check"></i>
+                Attendance Manager
+            </h1>
+            <p class="app-subtitle">Track and manage attendance records with full CRUD operations</p>
+        </div>
+    </header>
+
+
+    <div id="notification" class="notification" aria-live="polite"></div>
+
+
+    <main class="main-content">
+
+        <section class="card form-card" aria-labelledby="form-title">
+            <div class="card-header">
+                <h2 id="form-title">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="form-title-text">Add Attendance Record</span>
+                </h2>
+            </div>
+
+            <form id="attendanceForm" class="attendance-form">
+                <input type="hidden" id="recordId">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Name *
+                        </label>
+                        <input
+                                type="text"
+                                id="name"
+                                class="form-input"
+                                placeholder="Enter full name..."
+                                required
+                                aria-required="true"
+                        >
+                        <div class="form-error" id="name-error"></div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="date" class="form-label">
+                            <i class="fas fa-calendar"></i>
+                            Date *
+                        </label>
+                        <input
+                                type="date"
+                                id="date"
+                                class="form-input"
+                                required
+                                aria-required="true"
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="status" class="form-label">
+                            <i class="fas fa-check-circle"></i>
+                            Status *
+                        </label>
+                        <select id="status" class="form-select" required>
+                            <option value="">Select Status</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Late">Late</option>
+                            <option value="Excused">Excused</option>
+                            <option value="Half-day">Half-day</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="department" class="form-label">
+                            <i class="fas fa-building"></i>
+                            Class/Department
+                        </label>
+                        <input
+                                type="text"
+                                id="department"
+                                class="form-input"
+                                placeholder="e.g., Class 10A, Engineering, HR"
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="timeIn" class="form-label">
+                            <i class="fas fa-clock"></i>
+                            Time In
+                        </label>
+                        <input
+                                type="time"
+                                id="timeIn"
+                                class="form-input"
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="timeOut" class="form-label">
+                            <i class="fas fa-clock"></i>
+                            Time Out
+                        </label>
+                        <input
+                                type="time"
+                                id="timeOut"
+                                class="form-input"
+                        >
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="notes" class="form-label">
+                        <i class="fas fa-sticky-note"></i>
+                        Notes
+                    </label>
+                    <textarea
+                            id="notes"
+                            class="form-textarea"
+                            placeholder="Additional notes or remarks..."
+                            rows="2"
+                    ></textarea>
+                </div>
+
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-plus"></i>
+                        Add Record
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i>
+                        Clear Form
+                    </button>
+                    <button type="button" class="btn btn-info" id="refreshBtn">
+                        <i class="fas fa-sync"></i>
+                        Refresh List
+                    </button>
+                </div>
+            </form>
+        </section>
+
+
+        <section class="card list-card" aria-labelledby="list-title">
+            <div class="card-header">
+                <div class="list-header">
+                    <h2 id="list-title">
+                        <i class="fas fa-list"></i>
+                        Attendance Records
+                    </h2>
+                    <div class="list-stats">
+                            <span class="stat-item">
+                                <span class="stat-number" id="totalRecords">0</span>
+                                <span class="stat-label">Total</span>
+                            </span>
+                        <span class="stat-item">
+                                <span class="stat-number" id="presentRecords">0</span>
+                                <span class="stat-label">Present</span>
+                            </span>
+                        <span class="stat-item">
+                                <span class="stat-number" id="absentRecords">0</span>
+                                <span class="stat-label">Absent</span>
+                            </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filterDate">Filter by Date:</label>
+                    <input type="date" id="filterDate" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label for="filterStatus">Filter by Status:</label>
+                    <select id="filterStatus" class="filter-input">
+                        <option value="">All Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Late">Late</option>
+                        <option value="Excused">Excused</option>
+                        <option value="Half-day">Half-day</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterDepartment">Filter by Class/Dept:</label>
+                    <input type="text" id="filterDepartment" class="filter-input" placeholder="Department...">
+                </div>
+                <button class="btn btn-outline" id="clearFilters">
+                    <i class="fas fa-times"></i>
+                    Clear Filters
+                </button>
+            </div>
+
+
+            <div id="loadingState" class="loading-state">
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Loading attendance records...</p>
+            </div>
+
+
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>No Attendance Records</h3>
+                <p>Start by adding your first attendance record above!</p>
+                <button class="btn btn-primary" onclick="document.getElementById('name').focus()">
+                    <i class="fas fa-plus"></i>
+                    Add First Record
+                </button>
+            </div>
+
+
+            <div class="table-container" id="tableContainer">
+                <table id="attendanceTable" class="attendance-table" aria-describedby="list-title">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="col-name">Name</th>
+                        <th scope="col" class="col-date">Date</th>
+                        <th scope="col" class="col-status">Status</th>
+                        <th scope="col" class="col-department">Class/Department</th>
+                        <th scope="col" class="col-time">Time</th>
+                        <th scope="col" class="col-notes">Notes</th>
+                        <th scope="col" class="col-actions">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="list-actions">
+                <button class="btn btn-outline" id="exportBtn">
+                    <i class="fas fa-download"></i>
+                    Export to CSV
+                </button>
+                <button class="btn btn-outline" id="markAllPresentBtn">
+                    <i class="fas fa-check"></i>
+                    Mark All Present
+                </button>
+                <button class="btn btn-danger" id="clearAllBtn">
+                    <i class="fas fa-trash"></i>
+                    Clear All Records
+                </button>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Attendance Management System. Built with HTML, CSS, JavaScript.</p>
+            <div class="footer-links">
+                    <span id="dataStatus" class="status-indicator">
+                        <i class="fas fa-circle"></i>
+                        Ready
+                    </span>
+            </div>
+        </div>
+    </footer>
 </div>
-    <div>
-        <h2>KURT HARVY L. SARZATA</h2>
-        <h3>3rd year section B, IT Student</h3>
-    </div>
-    
-    <div>
-        <p><strong>Age:</strong> 21 years</p>
-        <p><strong>Phone:</strong> 09510244507</p>
-        <p><strong>Address:</strong> Brgy. Chitongco Mondragon N. Samar</p>
-        <p><strong>Email:</strong> kurtsarzata310@email.com</p>
-    </div>
-    
-    <div>
-        <h4>EDUCATION:</h4>
-        <p><strong>Elementary School: </strong> Mondragon 1 Central School</p>
-        <p><strong>Year:</strong> 2013-2018</p>
-    </div>
 
-     <div>
-        <p><strong>High School: </strong> St. Anthony Academy Mondragon N.S</p>
-        <p><strong>Year:</strong> 2018-2023</p>
-        <p><strong>Strand:</strong> Gas</p>
 
-    </div>
-
-    <div>
-        <p><strong>Callage: </strong> University of Eastern Phillippines</p>
-        <p><strong>Year:</strong> 3rd year 2025-2026</p>
-        <p><strong>Course:</strong> Information Technology</p>
-
-    </div>
-    
-    <div>
-        <h2>SKILLS:</h2>
-        <ul>
-            <li><strong>Computer Skills:</strong> fast learner in computer</li>
-            <li><strong>Languages:</strong> Filipino (Native), English (Carabao)</li>
-            <li><strong>Soft Skills:</strong> Teamwork, Time Management, Communication</li>
-        </ul>
-    </div>
-    
-    <div>
-        <h2>INTERESTS</h2>
-        <ul>
-            <li>Reading books</li>
-            <li>Environmental conservation</li>
-            <li>Learning new technologies</li>
-            <li>playing online games</li>
-            <li>playing guitar</li>
-        </ul>
-    </div>
-    
-    
+<script src="script.js"></script>
 </body>
 </html>
-
